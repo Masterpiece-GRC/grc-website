@@ -1,0 +1,963 @@
+@import "tailwindcss" source(none);
+@source "../../src";
+
+/*
+ * ============================================================================
+ * Masterpiece GRC Consulting — design system (2026 brand guidelines)
+ * ============================================================================
+ * Approved palette (blueprint hexes kept as anchors):
+ *   Obsidian  #000000  — the base. Serious, authoritative, carries the weight.
+ *   Violet    #620097  — the signature. Intelligence and clear thinking.
+ *   Indigo    #370075  — the deep end of the violet family.
+ *   Gold      #FDBA31  — used sparingly. Quality, achievement, never a slab.
+ *   Mist      #E2DADA  — the warm off-white for light surfaces and body copy.
+ *   White     #FFFFFF
+ *
+ * The guidelines are explicit that the palette lives as SOFT GRADIENTS with
+ * LIGHT GRAIN AND BLUR for depth. So no flat fills anywhere: each anchor
+ * carries a softened family (a lifted ink, a luminous accent, a pale mist) and
+ * every large area is a layered light field, not a block of colour. That is
+ * also what lets the frosted-glass surfaces read as glass.
+ *
+ * All colours are oklch and declared once here. Never hardcode a colour in a
+ * component — use a token so the palette stays auditable before launch.
+ * ============================================================================
+ */
+
+@theme inline {
+  --font-sans: var(--font-madani), var(--font-inter), ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", sans-serif;
+  --font-display: var(--font-madani), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-editorial), "Iowan Old Style", Georgia, serif;
+
+  --radius-xs: calc(var(--radius) - 8px);
+  --radius-sm: calc(var(--radius) - 6px);
+  --radius-md: calc(var(--radius) - 4px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 10px);
+  --radius-3xl: calc(var(--radius) + 18px);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* ---- Brand anchors and their softened families ---- */
+  --color-ink: var(--ink);
+  --color-ink-0: var(--ink-0);
+  --color-ink-lift: var(--ink-lift);
+  --color-ink-veil: var(--ink-veil);
+
+  --color-violet: var(--violet);
+  --color-violet-deep: var(--violet-deep);
+  --color-violet-lum: var(--violet-lum);
+  --color-violet-mist: var(--violet-mist);
+
+  --color-mist: var(--mist);
+  --color-mist-lift: var(--mist-lift);
+
+  --color-gold: var(--gold);
+  --color-gold-soft: var(--gold-soft);
+  --color-gold-mist: var(--gold-mist);
+
+  --color-ash: var(--ash);
+  --color-ash-soft: var(--ash-soft);
+
+  --color-on-dark: var(--on-dark);
+  --color-on-dark-muted: var(--on-dark-muted);
+  --color-on-dark-faint: var(--on-dark-faint);
+
+  --color-hairline: var(--hairline);
+  --color-hairline-strong: var(--hairline-strong);
+  --color-hairline-dark: var(--hairline-dark);
+  --color-hairline-dark-strong: var(--hairline-dark-strong);
+
+  /* ---- Legacy aliases ----------------------------------------------------
+   * The old palette's class names (bg-navy, text-teal, border-ivory…) are kept
+   * pointing at their nearest brand equivalent so the build does not collapse
+   * the moment this file lands. They are a migration ramp, NOT part of the
+   * system. Delete this block once `rg "navy|teal|ivory|slate" src/` is clean.
+   * -------------------------------------------------------------------- */
+  --color-navy: var(--ink);
+  --color-navy-deep: var(--ink-0);
+  --color-navy-soft: var(--ink-lift);
+  --color-navy-veil: var(--ink-veil);
+  --color-teal: var(--violet);
+  --color-teal-soft: var(--violet-deep);
+  --color-teal-lum: var(--violet-lum);
+  --color-teal-mist: var(--violet-mist);
+  --color-ivory: var(--mist);
+  --color-ivory-lift: var(--mist-lift);
+  --color-slate: var(--ash);
+  --color-slate-soft: var(--ash-soft);
+}
+
+:root {
+  /* Sharper than a pill, soft enough for glass to read as glass. The mark is
+     built from hard four-pointed stars, so the UI stays close to square. */
+  --radius: 0.75rem;
+
+  /* Anchors (blueprint) */
+  --obsidian: oklch(0 0 0); /* #000000 */
+  --violet: oklch(0.392 0.202 307); /* #620097 */
+  --violet-deep: oklch(0.298 0.165 294); /* #370075 */
+  --gold: oklch(0.83 0.159 80); /* #FDBA31 */
+  --mist: oklch(0.895 0.009 17); /* #E2DADA */
+
+  /* Softened families — depth without inventing new brand colours.
+     The ink family is black carried a few degrees toward the violet so dark
+     fields never go dead-grey where they meet the gradients. */
+  --ink-0: oklch(0.13 0.012 300);
+  --ink: oklch(0.178 0.018 300);
+  --ink-lift: oklch(0.238 0.028 300);
+  --ink-veil: oklch(0.3 0.045 300);
+
+  --violet-lum: oklch(0.58 0.215 304);
+  --violet-mist: oklch(0.93 0.035 304);
+
+  --gold-soft: oklch(0.885 0.105 82);
+  --gold-mist: oklch(0.955 0.038 84);
+
+  --mist-lift: oklch(0.962 0.005 20);
+
+  /* Neutral text tones for light surfaces, pulled off the mist hue so the
+     greys stay in the same warm family rather than reading blue. */
+  --ash: oklch(0.452 0.012 300);
+  --ash-soft: oklch(0.565 0.012 300);
+
+  --on-dark: oklch(1 0 0);
+  --on-dark-muted: oklch(0.868 0.012 300);
+  --on-dark-faint: oklch(0.7 0.016 300);
+
+  --hairline: oklch(0.178 0.018 300 / 10%);
+  --hairline-strong: oklch(0.178 0.018 300 / 18%);
+  --hairline-dark: oklch(1 0 0 / 10%);
+  --hairline-dark-strong: oklch(1 0 0 / 20%);
+
+  /* ---- Semantic mapping ----
+     Black is the base, so the document default is dark. Light sections are the
+     deliberate exception, applied per-section with `field-mist`. */
+  --background: var(--ink-0);
+  --foreground: var(--on-dark);
+  --card: oklch(0.238 0.028 300);
+  --card-foreground: var(--on-dark);
+  --popover: oklch(0.2 0.022 300);
+  --popover-foreground: var(--on-dark);
+  --primary: var(--violet);
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.26 0.03 300);
+  --secondary-foreground: var(--on-dark);
+  --muted: oklch(0.26 0.03 300);
+  --muted-foreground: var(--on-dark-faint);
+  --accent: var(--gold);
+  --accent-foreground: var(--ink-0);
+  --destructive: oklch(0.58 0.2 26);
+  --destructive-foreground: oklch(1 0 0);
+  --border: var(--hairline-dark);
+  --input: oklch(1 0 0 / 16%);
+  --ring: var(--violet-lum);
+
+  /* Inside a light section, flip the semantics rather than hardcoding. Put
+     `data-tone="light"` on the section wrapper and children keep working. */
+  [data-tone="light"] {
+    --background: var(--mist);
+    --foreground: var(--ink);
+    --card: oklch(1 0 0);
+    --card-foreground: var(--ink);
+    --popover: oklch(1 0 0);
+    --popover-foreground: var(--ink);
+    --secondary: var(--mist-lift);
+    --secondary-foreground: var(--ink);
+    --muted: var(--mist-lift);
+    --muted-foreground: var(--ash);
+    --border: var(--hairline);
+    --input: oklch(0.178 0.018 300 / 16%);
+    color: var(--foreground);
+  }
+
+  /* ------------------------------------------------------------------
+   * Layered light. The guidelines call for soft gradients with grain and
+   * blur — each of these replaces what would otherwise be a flat fill.
+   * ------------------------------------------------------------------ */
+
+  /* The signature surface: black base, a violet depth field bleeding in from
+     one corner, a single restrained gold bloom opposite it. This is the
+     gradient language from the brand imagery, translated to a section. */
+  --field-authority:
+    radial-gradient(105% 80% at 82% 6%, oklch(0.392 0.202 307 / 62%) 0%, transparent 60%),
+    radial-gradient(90% 72% at 6% 94%, oklch(0.298 0.165 294 / 52%) 0%, transparent 64%),
+    radial-gradient(62% 50% at 96% 88%, oklch(0.83 0.159 80 / 20%) 0%, transparent 68%),
+    linear-gradient(168deg, oklch(0.2 0.028 300) 0%, oklch(0.115 0.012 300) 60%, oklch(0.145 0.02 300) 100%);
+
+  /* The louder variant — for the hero only. Violet and gold actually meet and
+     blur into each other, exactly as they do in the brand photography. Used
+     more than once per page it stops being special. */
+  --field-signature:
+    radial-gradient(70% 58% at 22% 18%, oklch(0.392 0.202 307 / 78%) 0%, transparent 62%),
+    radial-gradient(58% 52% at 68% 74%, oklch(0.83 0.159 80 / 42%) 0%, transparent 60%),
+    radial-gradient(90% 70% at 92% 4%, oklch(0.298 0.165 294 / 58%) 0%, transparent 66%),
+    linear-gradient(150deg, oklch(0.165 0.022 300) 0%, oklch(0.09 0.01 300) 55%, oklch(0.13 0.016 300) 100%);
+
+  /* Light surface: warm mist with a violet haze and a gold whisper. */
+  --field-mist:
+    radial-gradient(100% 80% at 88% 0%, oklch(0.93 0.035 304 / 70%) 0%, transparent 60%),
+    radial-gradient(90% 70% at 4% 100%, oklch(0.955 0.038 84 / 72%) 0%, transparent 62%),
+    linear-gradient(180deg, oklch(0.962 0.005 20) 0%, oklch(0.895 0.009 17) 100%);
+
+  /* Recessed light surface, used to separate adjacent light sections. */
+  --field-quiet:
+    radial-gradient(80% 60% at 100% 50%, oklch(0.93 0.035 304 / 50%) 0%, transparent 65%),
+    linear-gradient(180deg, oklch(0.94 0.007 18) 0%, oklch(0.908 0.009 17) 100%);
+
+  /* Fine hairlines that fade rather than stopping hard. */
+  --rule-gold: linear-gradient(
+    90deg,
+    transparent,
+    oklch(0.83 0.159 80 / 70%) 30%,
+    oklch(0.885 0.105 82) 55%,
+    transparent
+  );
+  --rule-violet: linear-gradient(
+    90deg,
+    transparent,
+    oklch(0.58 0.215 304 / 60%) 30%,
+    oklch(0.58 0.215 304) 55%,
+    transparent
+  );
+  --rule-hairline: linear-gradient(90deg, transparent, var(--hairline-strong) 50%, transparent);
+  --rule-hairline-dark: linear-gradient(
+    90deg,
+    transparent,
+    var(--hairline-dark-strong) 50%,
+    transparent
+  );
+
+  /* ---- Glass surfaces ---- */
+  --glass-light: oklch(1 0 0 / 62%);
+  --glass-light-hover: oklch(1 0 0 / 82%);
+  --glass-dark: oklch(0.392 0.202 307 / 16%);
+  --glass-dark-hover: oklch(0.392 0.202 307 / 28%);
+  --glass-blur: 22px;
+
+  /* Diffuse, low-contrast shadows. Hard drop shadows read as cheap. On a black
+     base a shadow does almost nothing, so dark surfaces lean on the inset
+     highlight and the violet bloom below instead. */
+  --shadow-glass:
+    0 1px 1px oklch(0 0 0 / 22%), 0 8px 20px -14px oklch(0 0 0 / 45%),
+    0 28px 56px -36px oklch(0 0 0 / 55%);
+  --shadow-glass-lift:
+    0 1px 1px oklch(0 0 0 / 24%), 0 14px 28px -16px oklch(0 0 0 / 48%),
+    0 40px 72px -40px oklch(0.298 0.165 294 / 45%);
+  --shadow-elevated: 0 30px 70px -34px oklch(0.298 0.165 294 / 55%);
+  --shadow-glass-on-light:
+    0 1px 1px oklch(0.178 0.018 300 / 4%), 0 8px 20px -14px oklch(0.178 0.018 300 / 14%),
+    0 28px 56px -36px oklch(0.178 0.018 300 / 18%);
+
+  /* Film grain — the guidelines ask for it by name, and it also removes
+     banding across the large violet/black gradients. */
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.42'/%3E%3C/svg%3E");
+
+  /* Four-pointed star, taken from the mark. Used as a mask for brand imagery
+     and as a bullet/spark glyph. No logo lockup, just the geometry. */
+  --star-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 0C50 27 73 50 100 50 73 50 50 73 50 100 50 73 27 50 0 50 27 50 50 27 50 0Z' fill='%23000'/%3E%3C/svg%3E");
+
+  --ease-calm: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    border-color: var(--color-border);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+    background-color: var(--ink-0);
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    font-synthesis-weight: none;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Display type is the brand font, set large, tight and uppercase-friendly —
+     the guideline layouts lead with a single heavy headline and nothing else. */
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    text-wrap: balance;
+    font-feature-settings: "ss01", "cv11";
+  }
+
+  h1 {
+    letter-spacing: -0.034em;
+  }
+
+  h2 {
+    letter-spacing: -0.028em;
+  }
+
+  h3,
+  h4 {
+    letter-spacing: -0.018em;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    background-color: var(--violet);
+    color: oklch(1 0 0);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  /* On light surfaces gold-on-mist is too weak to read as a focus ring. */
+  [data-tone="light"] :focus-visible {
+    outline-color: var(--violet);
+  }
+}
+
+/* ==========================================================================
+ * Utilities
+ * ========================================================================== */
+
+@utility shell {
+  margin-inline: auto;
+  width: 100%;
+  max-width: 80rem;
+  padding-inline: 1.25rem;
+
+  @media (width >= 48rem) {
+    padding-inline: 2rem;
+  }
+}
+
+@utility eyebrow {
+  font-size: 0.7rem;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- Section fields (never flat fills) ---- */
+
+@utility field-authority {
+  background-color: var(--ink-0);
+  background-image: var(--field-authority);
+  color: var(--on-dark);
+}
+
+/* Hero only. */
+@utility field-signature {
+  background-color: var(--ink-0);
+  background-image: var(--field-signature);
+  color: var(--on-dark);
+}
+
+@utility field-mist {
+  background-color: var(--mist);
+  background-image: var(--field-mist);
+  color: var(--ink);
+}
+
+@utility field-quiet {
+  background-color: var(--mist);
+  background-image: var(--field-quiet);
+  color: var(--ink);
+}
+
+/* Grain overlay. Apply to an aria-hidden element stretched over a field.
+   Heavier on dark than the old palette needed — black gradients band badly. */
+@utility grain {
+  background-image: var(--grain);
+  background-repeat: repeat;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+}
+
+/* Stronger grain for the hero specifically. The hero carries a raymarched
+   canvas, not a flat gradient, so its detail needs more texture on top of it
+   to read as film grain rather than a barely-visible dusting. */
+@utility grain-strong {
+  background-image: var(--grain);
+  background-repeat: repeat;
+  opacity: 0.1;
+  mix-blend-mode: overlay;
+}
+
+/* The blur half of "gradient + grain + blur": an aria-hidden, absolutely
+   positioned bloom dropped behind content. Size it with width/height. */
+@utility bloom-violet {
+  background: radial-gradient(closest-side, oklch(0.392 0.202 307 / 62%), transparent);
+  filter: blur(72px);
+}
+
+@utility bloom-gold {
+  background: radial-gradient(closest-side, oklch(0.83 0.159 80 / 42%), transparent);
+  filter: blur(84px);
+}
+
+/*
+ * Hero wash. This is the actual fix for "black isn't dominant": a black
+ * multiply layer sat over the whole canvas, heaviest at the edges and at the
+ * bottom where body copy needs to sit, lighter at dead centre where the
+ * terrain's own highlights are allowed to read as violet/gold events rather
+ * than compete with black for the frame. Multiply can only ever darken, so it
+ * is safe against any shader output — it never needs to know what is under
+ * it, which is why this is a CSS layer and not another shader uniform.
+ */
+@utility hero-wash {
+  background-image:
+    radial-gradient(85% 70% at 18% 62%, oklch(0 0 0 / 12%) 0%, oklch(0 0 0 / 62%) 60%, oklch(0 0 0 / 2%) 100%),
+    linear-gradient(180deg, oklch(0 0 0 / 46%) 0%, oklch(0 0 0 / 14%) 26%, oklch(0 0 0 / 30%) 70%, oklch(0 0 0 / 64%) 100%);
+  mix-blend-mode: multiply;
+}
+
+/*
+ * Same idea as hero-wash, centred rather than left-weighted — for any dark
+ * WebGLBackdrop section whose copy is centre-aligned (the closing CTA, not
+ * the hero). Without this the CTA band has the identical "shader looks loud,
+ * black isn't dominant" problem the hero had, because it is the same
+ * canvas-plus-thin-scrim pattern.
+ */
+@utility cta-wash {
+  background-image:
+     radial-gradient(85% 70% at 18% 62%, oklch(0 0 0 / 12%) 0%, oklch(0 0 0 / 62%) 60%, oklch(0 0 0 / 2%) 100%),
+    linear-gradient(180deg, oklch(0 0 0 / 46%) 0%, oklch(0 0 0 / 14%) 26%, oklch(0 0 0 / 30%) 70%, oklch(0 0 0 / 64%) 100%);
+  mix-blend-mode: multiply;
+}
+
+/* Brand imagery is cut through the mark's own star window, never a plain box
+   or circle. Apply to the <img> wrapper; keep a square-ish aspect ratio. */
+@utility star-window {
+  mask-image: var(--star-mask);
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  -webkit-mask-image: var(--star-mask);
+  -webkit-mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+}
+
+/* ---- Glass ---- */
+
+@utility glass {
+  background-color: var(--glass-light);
+  backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+  border: 1px solid oklch(1 0 0 / 75%);
+  box-shadow:
+    var(--shadow-glass-on-light),
+    inset 0 1px 0 oklch(1 0 0 / 85%);
+}
+
+@utility glass-dark {
+  background-color: var(--glass-dark);
+  backdrop-filter: blur(var(--glass-blur)) saturate(135%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(135%);
+  border: 1px solid var(--hairline-dark);
+  box-shadow: inset 0 1px 0 oklch(1 0 0 / 9%);
+}
+
+/* Frosted navigation bar, dark — the default, since the base is black. */
+@utility glass-bar {
+  background-color: oklch(0.115 0.012 300 / 72%);
+  backdrop-filter: blur(26px) saturate(140%);
+  -webkit-backdrop-filter: blur(26px) saturate(140%);
+  border-bottom: 1px solid var(--hairline-dark);
+}
+
+/*
+ * Frosted navigation bar, light — used while the header sits over a mist
+ * section. Over light surfaces a black bar reads as a leftover slab of the
+ * hero, so the bar inverts to pale glass with dark text instead.
+ */
+@utility glass-bar-light {
+  background-color: oklch(0.962 0.005 20 / 84%);
+  backdrop-filter: blur(26px) saturate(150%);
+  -webkit-backdrop-filter: blur(26px) saturate(150%);
+  border-bottom: 1px solid var(--hairline);
+  box-shadow: 0 10px 30px -24px oklch(0.178 0.018 300 / 30%);
+}
+
+/* ---- Hairlines ---- */
+
+@utility rule-gold {
+  background-image: var(--rule-gold);
+  height: 1px;
+  width: 100%;
+}
+
+@utility rule-violet {
+  background-image: var(--rule-violet);
+  height: 1px;
+  width: 100%;
+}
+
+@utility rule-fine {
+  background-image: var(--rule-hairline);
+  height: 1px;
+  width: 100%;
+}
+
+@utility rule-fine-dark {
+  background-image: var(--rule-hairline-dark);
+  height: 1px;
+  width: 100%;
+}
+
+/* Gold is the achievement colour: reserved for the one action that matters on
+   a page. Still glass, not a solid fill — the guidelines say used sparingly. */
+@utility glass-gold {
+  border: 1px solid oklch(0.83 0.159 80 / 55%);
+  background: linear-gradient(135deg, oklch(1 0 0 / 16%), oklch(0.83 0.159 80 / 20%));
+  color: var(--on-dark);
+  backdrop-filter: blur(12px);
+  box-shadow:
+    inset 0 1px 0 oklch(1 0 0 / 28%),
+    0 10px 24px -14px oklch(0.83 0.159 80 / 40%);
+}
+
+/* The solid gold button. Text MUST be ink — white on #FDBA31 fails contrast. */
+@utility btn-gold {
+  background-image: linear-gradient(135deg, oklch(0.885 0.105 82), oklch(0.83 0.159 80) 60%, oklch(0.79 0.155 76));
+  color: var(--ink-0);
+  border: 1px solid oklch(0.79 0.155 76);
+  box-shadow:
+    inset 0 1px 0 oklch(1 0 0 / 45%),
+    0 10px 26px -14px oklch(0.83 0.159 80 / 55%);
+}
+
+/* Header CTAs deliberately use their own glass treatment. The navigation can
+   cross from a dark hero to a light surface, so a single gold button would
+   either bloom out on the dark bar or feel detached from the light one. */
+@utility header-cta-dark {
+  border: 1px solid oklch(0.83 0.159 80 / 58%);
+  background: linear-gradient(135deg, oklch(1 0 0 / 14%), oklch(0.83 0.159 80 / 20%));
+  color: var(--on-dark);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  box-shadow:
+    inset 0 1px 0 oklch(1 0 0 / 24%),
+    0 8px 20px -14px oklch(0 0 0 / 60%);
+  transition-property: background, border-color, color, box-shadow, transform;
+  &:hover {
+    border-color: var(--gold-soft);
+    background: linear-gradient(135deg, oklch(1 0 0 / 22%), oklch(0.83 0.159 80 / 38%));
+    box-shadow:
+      inset 0 1px 0 oklch(1 0 0 / 34%),
+      0 14px 28px -16px oklch(0.83 0.159 80 / 50%);
+  }
+}
+
+@utility header-cta-light {
+  border: 1px solid oklch(0.392 0.202 307 / 45%);
+  background: linear-gradient(135deg, oklch(1 0 0 / 70%), oklch(0.392 0.202 307 / 10%));
+  color: var(--ink);
+  backdrop-filter: blur(14px) saturate(145%);
+  -webkit-backdrop-filter: blur(14px) saturate(145%);
+  box-shadow:
+    inset 0 1px 0 oklch(1 0 0 / 82%),
+    0 8px 20px -14px oklch(0.178 0.018 300 / 21%);
+  transition-property: background, border-color, color, box-shadow, transform;
+  &:hover {
+    border-color: oklch(0.392 0.202 307 / 70%);
+    background: linear-gradient(
+      135deg,
+      oklch(1 0 0 / 76%),
+      oklch(0.392 0.202 307 / 16%) 54%,
+      oklch(0.83 0.159 80 / 24%)
+    );
+    color: var(--violet);
+    box-shadow:
+      inset 0 1px 0 oklch(1 0 0 / 88%),
+      0 14px 28px -16px oklch(0.392 0.202 307 / 32%);
+  }
+}
+
+/* Replaces the old sheen-navy. Same job: a small solid-ish dark chip that
+   still has movement in it. */
+@utility sheen-ink {
+  background-image: linear-gradient(
+    145deg,
+    oklch(0.28 0.055 302) 0%,
+    oklch(0.19 0.026 300) 55%,
+    oklch(0.145 0.016 300) 100%
+  );
+  color: var(--on-dark);
+  box-shadow:
+    inset 0 1px 0 oklch(1 0 0 / 14%),
+    0 10px 24px -14px oklch(0 0 0 / 60%);
+}
+
+@utility sheen-violet {
+  background-image: linear-gradient(
+    145deg,
+    oklch(0.46 0.21 305) 0%,
+    oklch(0.392 0.202 307) 55%,
+    oklch(0.298 0.165 294) 100%
+  );
+  color: var(--on-dark);
+  box-shadow:
+    inset 0 1px 0 oklch(1 0 0 / 18%),
+    0 10px 24px -14px oklch(0.298 0.165 294 / 60%);
+}
+
+@utility calm {
+  transition-timing-function: var(--ease-calm);
+  transition-duration: 320ms;
+}
+
+/* ==========================================================================
+ * Motion — 200-400ms, reduced-motion respected (blueprint requirement)
+ * ========================================================================== */
+
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes line-sweep {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes accordion-down {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+  }
+}
+
+@keyframes accordion-up {
+  from {
+    height: var(--radix-accordion-content-height);
+  }
+  to {
+    height: 0;
+  }
+}
+
+/* Pointer glow travelling between cards (see `<Spotlight />`), and the
+   infinite marquee track (see `<Marquee />`). */
+@keyframes marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/*
+ * These are component classes, so they MUST live in the `components` layer.
+ * Unlayered CSS beats every layered rule regardless of specificity, so an
+ * unlayered `.disclosure { display: grid }` would silently defeat a `hidden` or
+ * `lg:hidden` utility on the same element — which is exactly how the mobile
+ * navigation panel ended up participating in layout on desktop.
+ */
+@layer components {
+  .animate-accordion-down {
+    animation: accordion-down 300ms var(--ease-calm);
+  }
+
+  .animate-accordion-up {
+    animation: accordion-up 260ms var(--ease-calm);
+  }
+
+  .reveal {
+    opacity: 0;
+  }
+
+  .reveal.in-view {
+    animation: reveal-up 400ms var(--ease-calm) forwards;
+  }
+
+  /*
+   * Click-to-reveal panel. grid-template-rows 0fr -> 1fr animates a panel of
+   * unknown height without measuring it in JavaScript. Driven by `data-open`,
+   * which `DisclosureCard` now sets from hover on pointer-capable devices and
+   * from click on touch — the CSS itself doesn't need to know which.
+   */
+  .disclosure {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 320ms var(--ease-calm);
+  }
+
+  .disclosure[data-open="true"] {
+    grid-template-rows: 1fr;
+  }
+
+  .disclosure > * {
+    /* A 0fr grid track still honours a child's automatic minimum size unless
+       it is explicitly allowed to shrink. This makes a closed disclosure
+       occupy precisely zero panel height, rather than reserving room for its
+       hidden content. */
+    min-height: 0;
+    overflow: clip;
+    opacity: 0;
+    transition: opacity 200ms var(--ease-calm);
+  }
+
+  .disclosure[data-open="true"] > * {
+    opacity: 1;
+    transition-delay: 80ms;
+  }
+
+  /*
+   * Pointer-tracked glow, written by `useSpotlight` / `<Spotlight />`. Uses a
+   * centred fallback until the pointer has moved at least once, and sits at
+   * a negative stack level inside each card's `isolate` context so it paints
+   * above the card's glass background but below its text and controls.
+   */
+  .spotlight {
+    background: radial-gradient(
+      420px circle at var(--spot-x, 50%) var(--spot-y, 50%),
+      oklch(0.392 0.202 307 / 14%),
+      transparent 62%
+    );
+  }
+
+  .spotlight[data-spot="dark"] {
+    background: radial-gradient(
+      420px circle at var(--spot-x, 50%) var(--spot-y, 50%),
+      oklch(0.83 0.159 80 / 20%),
+      transparent 60%
+    );
+  }
+
+  /*
+   * Infinite marquee track (see `<Marquee />`). The list is rendered twice
+   * back to back and translated by exactly -50%, so the loop never jumps.
+   */
+  .marquee-track {
+    animation: marquee-scroll var(--marquee-duration, 30s) linear infinite;
+  }
+
+  @media (max-width: 767px) {
+    .marquee-track {
+      /* Slower, not shorter — the loop still completes, just more gently. */
+      animation-duration: calc(var(--marquee-duration, 30s) * 1.6);
+    }
+  }
+
+  /*
+   * WebGL backdrop. It stays transparent until the first frame has actually
+   * been drawn, so a failed shader compile or a device without WebGL degrades
+   * to the field painted behind it rather than to an opaque black box.
+   */
+  .webgl-canvas {
+    opacity: 0;
+    transition: opacity 600ms var(--ease-calm);
+  }
+
+  .webgl-canvas[data-ready="true"] {
+    opacity: 1;
+  }
+
+  /*
+   * Long-form prose for the utility notices. Written out rather than pulled
+   * from a typography plugin so the rhythm matches the rest of the site and
+   * stays inside the approved palette. Works on either tone because it reads
+   * the semantic tokens rather than naming colours.
+   */
+  .legal-prose {
+    color: var(--muted-foreground);
+    font-size: 0.9375rem;
+    line-height: 1.75;
+  }
+
+  .legal-prose > * + * {
+    margin-top: 1.15rem;
+  }
+
+  .legal-prose h2 {
+    margin-top: 3rem;
+    color: var(--foreground);
+    font-size: 1.375rem;
+    font-weight: 600;
+  }
+
+  .legal-prose h3 {
+    margin-top: 2.25rem;
+    color: var(--foreground);
+    font-size: 1.0625rem;
+    font-weight: 600;
+  }
+
+  .legal-prose h2 + *,
+  .legal-prose h3 + * {
+    margin-top: 0.85rem;
+  }
+
+  .legal-prose ul {
+    padding-left: 0;
+    list-style: none;
+  }
+
+  .legal-prose li {
+    position: relative;
+    padding-left: 1.5rem;
+  }
+
+  .legal-prose li + li {
+    margin-top: 0.6rem;
+  }
+
+  /* The bullet is the mark's four-pointed star, not a diamond. */
+  .legal-prose li::before {
+    position: absolute;
+    top: 0.55em;
+    left: 0.15rem;
+    width: 0.5rem;
+    height: 0.5rem;
+    background-color: var(--gold);
+    mask-image: var(--star-mask);
+    mask-size: contain;
+    mask-repeat: no-repeat;
+    -webkit-mask-image: var(--star-mask);
+    -webkit-mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    content: "";
+  }
+
+  .legal-prose a {
+    color: var(--gold);
+    font-weight: 500;
+    text-decoration: underline;
+    text-decoration-color: oklch(0.83 0.159 80 / 40%);
+    text-underline-offset: 2px;
+    transition: text-decoration-color 300ms var(--ease-calm);
+  }
+
+  .legal-prose a:hover {
+    text-decoration-color: var(--gold);
+  }
+
+  /* Gold on mist is unreadable, so links invert to violet on light sections. */
+  [data-tone="light"] .legal-prose a {
+    color: var(--violet);
+    text-decoration-color: oklch(0.392 0.202 307 / 35%);
+  }
+
+  [data-tone="light"] .legal-prose a:hover {
+    text-decoration-color: var(--violet);
+  }
+
+  [data-tone="light"] .legal-prose li::before {
+    background-color: var(--violet);
+  }
+
+  .legal-prose strong {
+    color: var(--foreground);
+    font-weight: 600;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .reveal {
+    opacity: 1;
+  }
+
+  .marquee-track {
+    animation: none;
+  }
+}
+
+/*
+ * Progressive enhancement: where backdrop-filter is unavailable the glass
+ * surfaces fall back to opaque equivalents so text contrast is never lost.
+ */
+@supports not (backdrop-filter: blur(2px)) {
+  .glass {
+    background-color: oklch(1 0 0 / 96%);
+  }
+
+  .glass-dark {
+    background-color: oklch(0.238 0.028 300 / 94%);
+  }
+
+  .glass-bar {
+    background-color: oklch(0.115 0.012 300 / 97%);
+  }
+
+  .glass-bar-light {
+    background-color: oklch(0.962 0.005 20 / 98%);
+  }
+}
+
+/* Where `mask-image` is unsupported, a star-masked image would render as a
+   full bleed rectangle. Fall back to a clip-path, which has wider support. */
+@supports not (mask-image: url("#x")) {
+  .star-window {
+    clip-path: polygon(50% 0%, 60% 40%, 100% 50%, 60% 60%, 50% 100%, 40% 60%, 0% 50%, 40% 40%);
+  }
+}
