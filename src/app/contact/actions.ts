@@ -34,7 +34,7 @@ const ENQUIRY_RECIPIENT = process.env["ENQUIRY_RECIPIENT"] ?? "info@masterpieceg
 // Must be an address on a domain verified with Resend — an unverified
 // sender fails at send time, not at build time, so this is worth checking
 // directly in the Resend dashboard if enquiries silently stop arriving.
-const ENQUIRY_SENDER = "Masterpiece GRC Consulting <enquiries@masterpiecegrcconsulting.com>";
+const ENQUIRY_SENDER = "Masterpiece GRC Consulting <info@masterpiecegrcconsulting.com>";
 
 if (!RESEND_API_KEY) {
   throw new Error("RESEND_API_KEY is not set in environment variables.");

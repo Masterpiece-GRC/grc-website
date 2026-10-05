@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
     
 
     await resend.emails.send({
-      from: "Masterpiece GRC Consulting <enquiries@masterpiecegrcconsulting.com>", // must be a verified domain address
+      from: "Masterpiece GRC Consulting <info@masterpiecegrcconsulting.com>", // must be a verified domain address
       to: contact.email,
       replyTo: email,
       subject: `${contact.label} enquiry from ${fullname}`,
